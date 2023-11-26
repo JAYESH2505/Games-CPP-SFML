@@ -4,6 +4,7 @@
 #include "Battleship.h"
 #include "Bullet.h"
 #include"Enemy.h"
+#include "Power.h"
 
 // Sfml.
 #include<SFML/Graphics.hpp>
@@ -23,6 +24,7 @@ class Game
 private:
 	sf::RenderWindow* Window;
 	Battleship* Ship;
+	std::vector<Power*>PUP;
 	
 	//Initialiser.
 	void initwindow();
@@ -40,6 +42,10 @@ private:
 
 	float spawntimer;
 	float spawntimermax;
+
+	//PowerUp Criteria
+	float time;
+	float timemax;
 
 	//Points
 	unsigned points;
@@ -69,9 +75,11 @@ public:
 	void updatebullets();
 	void updateenemy();
 	void updateplayer();
+	void updatePowerup();
 
 	//Render
 	void render();
+	
 
 	//Gui
 	sf::Font font;
@@ -91,5 +99,6 @@ public:
 	
 	//Others.
 	void combat();
+	void IncreaseHp();
 };
 

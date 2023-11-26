@@ -36,6 +36,10 @@ void Game::initenemies()
 {
 	this->spawntimermax = 50.f;
 	this->spawntimer = this->spawntimermax;
+
+	//Powerup
+	this->timemax = 1000.f;
+	this->time = this->timemax;
 }
 
 void Game::initgui()
@@ -242,12 +246,47 @@ void Game::updateplayer()
 	}
 }
 
+void Game::updatePowerup()
+{
+	this->time = this->time + 1.f;
+	if (this->time > this->timemax)
+	{
+		this->time = 0.f;
+		PUP.push_back(new Power(Window));
+	}
+
+	for (auto* i : PUP)
+	{
+		i->move();
+	}	
+	for (int i = 0;i < PUP.size();i++)
+	{
+		bool consume = false;
+
+			if (PUP[i]->getbound().intersects(Ship->getBound()))
+			{
+				delete PUP[i];
+				PUP.erase(PUP.begin() + i);
+				consume = true;
+				this->IncreaseHp();
+			}
+		
+		if (consume==false && PUP[i]->getbound().top>this->Window->getSize().y)
+		{
+			
+			delete PUP[i];
+			PUP.erase(PUP.begin() + i);
+		}
+	}
+
+}
+
 
 void Game::updategui()
 {
 	std::stringstream ss,gg;
 	ss << "Point : " << points;
-	gg<<"GAME OVER"<<std::endl<< "  Point : " << points;
+	gg<<"Point : " << points;
 	this->text.setString(ss.str());
 
 	
@@ -269,22 +308,33 @@ void Game::update()
 	this->Ship->update();
 	this->updateplayer();
 	this->updatebullets();
-
-	this->updateenemy();
+	this->updatePowerup();
 	this->updategui();
+	this->updateenemy();
+	
 }
 
 
 void Game::render()
 {
 	this->Window->clear();
-	this->renderworld();
+	
 	// Draw all the stuf
-	if (this->Ship->gethp() <= 0)
-		this->Window->draw(this->Gameover);
+	if (this->Ship->gethp() <= 0) {
+		Back.loadFromFile("Texture/GB.jpg");
+		Background.setTexture(Back);
+		Background.setPosition(100.f, 100.f);
+		Background.setScale(1.5f, 1.5f);
+		this->renderworld();
+		//this->Window->draw(this->Gameover);
+	}
 	else {
-
+	this->renderworld();
 	Ship->Render(*this->Window);
+	for (auto* i : this->PUP)
+	{
+		i->render(Window);
+	}
 	for (auto* i : this->B)
 	{
 		i->render(this->Window);
@@ -302,7 +352,18 @@ void Game::render()
 }
 
 
+
 //Extra
+
+void Game::IncreaseHp()
+{
+	if (this->Ship->gethp() < this->Ship->gethpmax())
+	{
+		int n = this->Ship->gethp();
+		n = n+1;
+		this->Ship->sethp(n);
+	}
+}
 void Game::playergui()
 {
 
@@ -310,3 +371,4 @@ void Game::playergui()
 void Game::combat()
 {
 }
+

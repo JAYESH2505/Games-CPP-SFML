@@ -53,7 +53,7 @@ public:
 
 	//modify
 	void setposition(const float x, const float y);
-	void sethp(const int hp);
+	void sethp(int hp);
 	void looshp(const int value);
 
 	void initgui();

@@ -111,7 +111,7 @@ void Battleship::setposition(const float x, const float y)
 	Ship.setPosition(x, y);
 }
 
-void Battleship::sethp(const int hp)
+void Battleship::sethp(int hp)
 {
 	this->hp = hp;
 }
