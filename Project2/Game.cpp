@@ -6,7 +6,7 @@
 // Intialise item
 void Game::initwindow()
 {
-	this->Window = new sf::RenderWindow(sf::VideoMode(1600,900), "Space Game", sf::Style::Close | sf::Style::Titlebar | sf::Style::Resize | sf::Style::Fullscreen);
+	this->Window = new sf::RenderWindow(sf::VideoMode(1600,900), "Space Game", sf::Style::Close | sf::Style::Titlebar | sf::Style::Resize | sf::Style::Fullscreen );
 	this->Window->setFramerateLimit(144);
 	this->Window->setVerticalSyncEnabled(false);
 }
@@ -17,7 +17,6 @@ void Game::initPlayer()
 	this->Ship = new Battleship();
 }
 
-//!!!!
 
 void Game::inittexture()
 {
