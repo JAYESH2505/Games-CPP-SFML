@@ -29,6 +29,10 @@ void Game::inittexture()
 	this->Background.setScale(.9f, .8f);
 	//this->Background.setPosition(this->Window->getSize().x/2.f, this->Window->getSize().y / 2.f);
 	
+	this->pau.loadFromFile("Texture/Pause.gif");
+	this->pauseScreen.setTexture(this->pau);
+	this->pauseScreen.setScale(1.f, 1.f);
+	
 }
 
 void Game::initenemies()
@@ -39,6 +43,9 @@ void Game::initenemies()
 	//Powerup
 	this->timemax = 1000.f;
 	this->time = this->timemax;
+
+	//Pause
+	this->Pause = false;
 }
 
 void Game::initgui()
@@ -114,9 +121,15 @@ void Game::run()
 	while (this->Window->isOpen() )
 	{
 		this->Pollevent();
-		if(this->Ship->gethp()>0)
-			this->update();
-		this->render();
+		if (this->Pause)
+		{
+			this->render();
+		}
+		else {
+			if (this->Ship->gethp() > 0) {
+				this->update();
+			}this->render();
+		}
 	}
 }
 
@@ -134,6 +147,8 @@ void Game::Pollevent()
 		case sf::Event::KeyPressed:
 			if(sf::Keyboard::Escape==E.key.code)
 				this->Window->close();
+			if(sf::Keyboard::Space == E.key.code)
+				this->Pause = !this->Pause;
 		}
 	}
 }
@@ -346,6 +361,10 @@ void Game::render()
 	//this->enemies->render(this->Window);
 
 	// Gameover
+	}
+	if (this->Pause)
+	{
+		Window->draw(this->pauseScreen);
 	}
 	this->Window->display();
 }

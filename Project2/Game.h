@@ -50,6 +50,12 @@ private:
 	//Points
 	unsigned points;
 
+
+	sf::Texture pau;
+	sf::Sprite pauseScreen;
+
+	bool Pause;
+
 public:
 
 	// Intializer
