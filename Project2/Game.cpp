@@ -46,6 +46,13 @@ void Game::initenemies()
 
 	//Pause
 	this->Pause = false;
+
+	//Sound
+	this->Bf.loadFromFile("Music/Bullet.wav");
+	this->Sound.setBuffer(this->Bf);
+
+	this->Ex.loadFromFile("Music/Explo.wav");
+	this->Explosion.setBuffer(this->Ex);
 }
 
 void Game::initgui()
@@ -184,8 +191,11 @@ void Game::ShipMovement()
 	// Move Player
 
 
-	if (sf::Mouse::isButtonPressed(sf::Mouse::Left)  && this->Ship->canattack())
+	if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && this->Ship->canattack()) {
 		this->B.push_back(new Bullet(this->texture["Bullets"],this->Ship->getpos().x+this->Ship->getBound().width/2.f, this->Ship->getpos().y, 0.f, -1.f, 5.f));
+		this->Bulletsound();
+	}
+		
 }
 
 void Game::updatebullets()
@@ -223,6 +233,7 @@ void Game::updateenemy()
 			if (this->B[j]->getbound().intersects(this->E[i]->getbound()))
 			{
 				this->points += this->E[i]->getpoint();
+				this->Explosionsound();
 				delete E[i];
 				delete B[j];
 				E.erase(E.begin() + i);
@@ -233,6 +244,7 @@ void Game::updateenemy()
 		if (enemiesr==false && E[i]->getbound().top>this->Window->getSize().y)
 		{
 			this->Ship->looshp(1);
+			this->Explosionsound();
 			delete E[i];
 			E.erase(E.begin() + i);
 			std::cout << E.size() << std::endl;
@@ -381,6 +393,16 @@ void Game::IncreaseHp()
 		n = n+1;
 		this->Ship->sethp(n);
 	}
+}
+void Game::Bulletsound()
+{
+	Sound.play();
+	Sound.setPlayingOffset(sf::seconds(2.f));
+	
+}
+void Game::Explosionsound()
+{
+	Explosion.play();
 }
 void Game::playergui()
 {

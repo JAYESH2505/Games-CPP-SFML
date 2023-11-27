@@ -10,6 +10,7 @@
 #include<SFML/Graphics.hpp>
 #include<SFML/System.hpp>
 #include<SFML/Window.hpp>
+#include<SFML/Audio.hpp>
 
 //Basic C++.
 #include<map>
@@ -25,14 +26,14 @@ private:
 	sf::RenderWindow* Window;
 	Battleship* Ship;
 	std::vector<Power*>PUP;
-	
+
 	//Initialiser.
 	void initwindow();
 	void initPlayer();
 
 	// Resource 
 	std::map<std::string, sf::Texture*>texture;
-	
+
 
 	//Enemies and Bullets.
 	std::vector<Enemy*> E;
@@ -50,11 +51,16 @@ private:
 	//Points
 	unsigned points;
 
-
+	//Pause Menu
 	sf::Texture pau;
 	sf::Sprite pauseScreen;
-
 	bool Pause;
+
+	//Song
+	sf::SoundBuffer Bf;
+	sf::Sound Sound;
+	sf::SoundBuffer Ex;
+	sf::Sound Explosion;
 
 public:
 
@@ -85,7 +91,7 @@ public:
 
 	//Render
 	void render();
-	
+
 
 	//Gui
 	sf::Font font;
@@ -102,9 +108,11 @@ public:
 	sf::Texture Back;
 	sf::Sprite Background;
 	void renderworld();
-	
+
 	//Others.
 	void combat();
 	void IncreaseHp();
+	void Bulletsound();
+	void Explosionsound();
 };
 
