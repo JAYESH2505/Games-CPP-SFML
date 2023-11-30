@@ -31,6 +31,8 @@ void Enemy::initvariable()
 	this->damage = this->pointcount;
 	this->points = this->pointcount;
 	this->speed = this->type;
+	if (this->speed == 3)
+		this->speed = 2;
 }
 
 

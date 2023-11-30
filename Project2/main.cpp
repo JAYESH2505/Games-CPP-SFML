@@ -7,14 +7,22 @@
 int main()
 {
 	sf::Music Music;
-	Music.openFromFile("Music/La.ogg");
+	Music.openFromFile("Music/On.ogg");
 	Music.setVolume(50.f);
 	Music.play();
 	//Intialising Random mod.
 	srand(static_cast<unsigned>(time((0))));
-	
-	Game game;
 
-	game.run();
+	int* Reset = new int(1);
+	while (*Reset) {
+	    Reset = new int(0);
+		Game game;
+		game.run(Reset);
+	}
+		
+	
 	Music.stop();
+
+
+	return 0;
 }

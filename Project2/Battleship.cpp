@@ -19,7 +19,7 @@ void Battleship::initspirite()
 
 void Battleship::initvariable()
 {
-	this->MovementSpeed = 3.f;
+	this->MovementSpeed = 4.f;
 	this->cooldownmax = 50.f;
 	this->cooldown = this->cooldownmax;
 	this->hpmax = 10;

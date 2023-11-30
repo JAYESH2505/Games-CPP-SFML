@@ -15,6 +15,8 @@ void Game::initPlayer()
 {
 	
 	this->Ship = new Battleship();
+	this->Ship->setposition(50.f, 50.f);
+
 }
 
 
@@ -32,6 +34,22 @@ void Game::inittexture()
 	this->pau.loadFromFile("Texture/Pause.gif");
 	this->pauseScreen.setTexture(this->pau);
 	this->pauseScreen.setScale(1.f, 1.f);
+
+	this->st.loadFromFile("Texture/Loading.jpg");
+	this->StartScreen.setTexture(this->st);
+	this->StartScreen.setScale(3.8f, 4.8f);
+	this->StartScreen.setPosition(0.f, 0.f);
+
+	this->ch.loadFromFile("Texture/Choice.jpg");
+	this->ChoiceScreen.setTexture(this->ch);
+
+
+	//Sound
+	this->Bf.loadFromFile("Music/Bullet.wav");
+	this->Sound.setBuffer(this->Bf);
+
+	this->Ex.loadFromFile("Music/Explo.wav");
+	this->Explosion.setBuffer(this->Ex);
 	
 }
 
@@ -47,12 +65,17 @@ void Game::initenemies()
 	//Pause
 	this->Pause = false;
 
-	//Sound
-	this->Bf.loadFromFile("Music/Bullet.wav");
-	this->Sound.setBuffer(this->Bf);
+	//Start 
+	this->start = true;
 
-	this->Ex.loadFromFile("Music/Explo.wav");
-	this->Explosion.setBuffer(this->Ex);
+	//Choice
+	this->choice = 0;
+
+	//Mouse
+	this->MouseClicked = false;
+
+	
+
 }
 
 void Game::initgui()
@@ -79,6 +102,8 @@ void Game::initgui()
 	this->Hpbarback.setFillColor(sf::Color(10, 10, 10, 200));
 	this->Hpbarback.setPosition(sf::Vector2f(20.f, 20.f));
 }
+
+
 
 
 //Intializer
@@ -123,25 +148,36 @@ void Game::initsystem()
 
 
 //Function
-void Game::run()
+void Game::run(int* Reset)
 {
-	while (this->Window->isOpen() )
+	while (this->Window->isOpen())
 	{
-		this->Pollevent();
+		if (*Reset == 1)
+			return;
+		this->Pollevent(Reset);
 		if (this->Pause)
+		{
+			this->render();
+		}
+		else if (this->start)
+		{
+			this->render();
+		}
+		else if (this->choice == 0)
 		{
 			this->render();
 		}
 		else {
 			if (this->Ship->gethp() > 0) {
 				this->update();
-			}this->render();
+			}
+			this->render();
 		}
 	}
 }
 
 
-void Game::Pollevent()
+void Game::Pollevent(int* Reset)
 {
 	sf::Event E;
 	while (this->Window->pollEvent(E))
@@ -152,10 +188,19 @@ void Game::Pollevent()
 			this->Window->close();
 			break;
 		case sf::Event::KeyPressed:
-			if(sf::Keyboard::Escape==E.key.code)
+			if (sf::Keyboard::Escape == E.key.code)
 				this->Window->close();
-			if(sf::Keyboard::Space == E.key.code)
+			else if (sf::Keyboard::Space == E.key.code)
 				this->Pause = !this->Pause;
+			else if (sf::Keyboard::Enter == E.key.code)
+				this->start = false;
+			else if (sf::Keyboard::Num1 == E.key.code)
+				this->choice = 1;
+			else if (sf::Keyboard::Num2 == E.key.code)
+				this->choice = 2;
+			else if (sf::Keyboard::Tab == E.key.code)
+				*Reset = 1;
+				
 		}
 	}
 }
@@ -307,6 +352,66 @@ void Game::updatePowerup()
 
 }
 
+void Game::updateCursor()
+{
+	this->spawntimer += 0.5f;
+	if (this->spawntimer >= this->spawntimermax)
+	{
+		this->E.push_back(new Enemy(rand() % this->Window->getSize().x - 50.f, -100.f));
+		this->spawntimer = 0.f;
+	}
+	
+	for (int i = 0;i < this->E.size();i++) {
+		E[i]->update();
+		if (E[i]->getbound().top > this->Window->getSize().y)
+		{
+			this->Ship->looshp(1);
+			this->Explosionsound();
+			delete E[i];
+			E.erase(E.begin() + i);
+			
+		}
+		
+	}
+	this->updateMouse();
+
+	if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
+	{
+		if (this->MouseClicked == false)
+		{
+			this->MouseClicked = true;
+			bool deleted = false;
+
+			for (int i = 0;i < this->E.size() && deleted == false;i++)
+			{
+
+				if (E[i]->getbound().contains(this->MousePosView))
+				{
+
+					//Delete enemies
+					this->points += this->E[i]->getpoint();
+					delete E[i];
+					E.erase(E.begin() + i);
+					
+					deleted = true;
+				}
+
+			}
+		}
+		
+
+	}
+	else
+	{
+		this->MouseClicked = false;
+	}
+}
+
+void Game::updateMouse()
+{
+	this->MousePosWindow = sf::Mouse::getPosition(*this->Window);
+	this->MousePosView = this->Window->mapPixelToCoords(this->MousePosWindow);
+}
 
 void Game::updategui()
 {
@@ -330,13 +435,22 @@ void Game::updategui()
 // Update and Render
 void Game::update()
 {
-	this->ShipMovement();
-	this->Ship->update();
-	this->updateplayer();
-	this->updatebullets();
+	if (choice == 1)
+	{
+		this->ShipMovement();
+		this->Ship->update();
+		this->updatebullets();
+		this->updateplayer();
+		this->updateenemy();
+		
+	}
+	if (choice == 2)
+	{
+		this->updateCursor();
+	}
 	this->updatePowerup();
 	this->updategui();
-	this->updateenemy();
+	
 	
 }
 
@@ -344,13 +458,21 @@ void Game::update()
 void Game::render()
 {
 	this->Window->clear();
-	
+	if (this->start)
+	{
+		Window->draw(this->StartScreen);
+	}
+	else if (choice == 0)
+	{
+		Window->draw(this->ChoiceScreen);
+	}
+	else {
 	// Draw all the stuf
 	if (this->Ship->gethp() <= 0) {
-		Back.loadFromFile("Texture/GB.jpg");
+		Back.loadFromFile("Texture/GameOver4.png");
 		Background.setTexture(Back);
-		Background.setPosition(100.f, 100.f);
-		Background.setScale(1.5f, 1.5f);
+		Background.setPosition(350.f, 0.f);
+		Background.setScale(1.5, 1.5f);
 		this->renderworld();
 		//this->Window->draw(this->Gameover);
 	}
@@ -377,6 +499,8 @@ void Game::render()
 	if (this->Pause)
 	{
 		Window->draw(this->pauseScreen);
+	}
+
 	}
 	this->Window->display();
 }
@@ -411,4 +535,5 @@ void Game::playergui()
 void Game::combat()
 {
 }
+
 

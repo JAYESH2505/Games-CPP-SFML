@@ -62,6 +62,22 @@ private:
 	sf::SoundBuffer Ex;
 	sf::Sound Explosion;
 
+	//Start
+	bool start;
+	sf::Texture st;
+	sf::Sprite StartScreen;
+
+	//Choice
+	int choice;
+	sf::Texture ch;
+	sf::Sprite ChoiceScreen;
+
+	//Mouse
+	bool MouseClicked;
+	sf::Vector2i MousePosWindow;
+	sf::Vector2f MousePosView;
+
+	
 public:
 
 	// Intializer
@@ -72,8 +88,8 @@ public:
 	void initsystem();
 
 	// Basic Function
-	void run();
-	void Pollevent();
+	void run(int * Reset);
+	void Pollevent(int* Reset);
 
 
 
@@ -88,6 +104,8 @@ public:
 	void updateenemy();
 	void updateplayer();
 	void updatePowerup();
+	void updateCursor();
+	void updateMouse();
 
 	//Render
 	void render();
