@@ -1,4 +1,4 @@
 # Space Combat Game 
 
-** This is Created Using Sfml And C++ **
+**This is Created Using Sfml And C++**
 
