@@ -10,14 +10,15 @@
 
 3) Just tap on the sin file.
 
-4)Enjoy.
+4) Enjoy.
 
 
 ![image](https://github.com/JAYESH2505/Games-CPP-SFML/assets/142912688/59b93298-422f-4ace-83f5-7c6fe0445524)
 
 
 ### Website 
-https://jayeshpathak.itch.io/space-invader
+**https://jayeshpathak.itch.io/space-invader**
 
-![Uploading image.png…]()
+![image](https://github.com/JAYESH2505/Games-CPP-SFML/assets/142912688/0f7ab474-7544-40eb-b28c-04908ea5c957)
+
 
